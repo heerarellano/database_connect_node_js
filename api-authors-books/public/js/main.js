@@ -7,21 +7,40 @@ $(document).ready(function () {
   $('#btnBooks').click(loadBooks);
 });
 
+
+
 function resetTable(headers) {
   if (table) {
     table.destroy();
   }
 
-  // 🔥 limpia completamente la tabla
   $('#mainTable').empty();
 
-  // 🔥 reconstruye el thead
   $('#mainTable').append(`
     <thead>
       <tr>${headers}</tr>
     </thead>
   `);
 }
+
+$('#mainTable').on('click', '.btn-view', function () {
+  const data = table.row($(this).parents('tr')).data();
+
+  console.log(data); // verifica en consola
+
+  $('#viewId').val(data.id);
+  $('#viewName').val(data.name);
+
+  // Detecta si es author o book
+  if (data.age !== undefined) {
+    $('#viewExtra').val('Age: ' + data.age);
+  } else {
+    $('#viewExtra').val('Pages: ' + data.cantPages);
+  }
+
+  const modal = new bootstrap.Modal(document.getElementById('viewModal'));
+  modal.show();
+});
 
 function loadAuthors() {
   resetTable(`
@@ -32,7 +51,10 @@ function loadAuthors() {
   `);
 
   table = $('#mainTable').DataTable({
-    ajax: '/authors',
+    ajax: {
+      url: '/authors',
+      dataSrc: 'data'
+    },
     columns: [
       { data: 'id' },
       { data: 'name' },
@@ -40,13 +62,15 @@ function loadAuthors() {
       {
         data: null,
         render: function (data) {
-          return `<button class="btn btn-danger btn-delete-author" data-id="${data.id}">Delete</button>`;
+          return `
+            <button class="btn btn-info btn-view">View</button>
+            <button class="btn btn-danger btn-delete-author" data-id="${data.id}">Delete</button>
+          `;
         }
       }
     ]
   });
 }
-
 function loadBooks() {
   resetTable(`
     <th>ID</th>
@@ -57,7 +81,10 @@ function loadBooks() {
   `);
 
   table = $('#mainTable').DataTable({
-    ajax: '/books',
+    ajax: {
+      url: '/books',
+      dataSrc: 'data'
+    },
     columns: [
       { data: 'id' },
       { data: 'isbn' },
@@ -66,11 +93,14 @@ function loadBooks() {
       {
         data: null,
         render: function (data) {
-          return `<button class="btn btn-danger btn-delete-book" data-id="${data.id}">Delete</button>`;
+          return `
+            <button class="btn btn-info btn-view">View</button>
+            <button class="btn btn-danger btn-delete-book" data-id="${data.id}">Delete</button>
+          `;
         }
       }
     ]
-  });
+  }); 
 }
 
 // DELETE AUTHOR
@@ -108,3 +138,5 @@ $('#mainTable').on('click', '.btn-delete-book', function () {
     }
   });
 });
+
+
