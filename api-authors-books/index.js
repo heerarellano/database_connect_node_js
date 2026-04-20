@@ -73,6 +73,42 @@ app.post('/books', async (req, res) => {
   }
 });
 
+// DELETE AUTHOR
+app.delete('/authors/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deleted = await Author.destroy({ where: { id } });
+
+    if (!deleted) {
+      return res.status(404).json({ message: 'Author not found' });
+    }
+
+    return res.json({ message: 'Author deleted' });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// DELETE BOOK
+app.delete('/books/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deleted = await Book.destroy({ where: { id } });
+
+    if (!deleted) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
+
+    return res.json({ message: 'Book deleted' });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 sequelize.authenticate()
   .then(() => {
     console.log('Connection success');

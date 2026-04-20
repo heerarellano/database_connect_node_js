@@ -28,6 +28,7 @@ function loadAuthors() {
     <th>ID</th>
     <th>Name</th>
     <th>Age</th>
+    <th>Actions</th>
   `);
 
   table = $('#mainTable').DataTable({
@@ -35,7 +36,13 @@ function loadAuthors() {
     columns: [
       { data: 'id' },
       { data: 'name' },
-      { data: 'age' }
+      { data: 'age' },
+      {
+        data: null,
+        render: function (data) {
+          return `<button class="btn btn-danger btn-delete-author" data-id="${data.id}">Delete</button>`;
+        }
+      }
     ]
   });
 }
@@ -46,6 +53,7 @@ function loadBooks() {
     <th>ISBN</th>
     <th>Name</th>
     <th>Pages</th>
+    <th>Actions</th>
   `);
 
   table = $('#mainTable').DataTable({
@@ -54,7 +62,49 @@ function loadBooks() {
       { data: 'id' },
       { data: 'isbn' },
       { data: 'name' },
-      { data: 'cantPages' }
+      { data: 'cantPages' },
+      {
+        data: null,
+        render: function (data) {
+          return `<button class="btn btn-danger btn-delete-book" data-id="${data.id}">Delete</button>`;
+        }
+      }
     ]
   });
 }
+
+// DELETE AUTHOR
+$('#mainTable').on('click', '.btn-delete-author', function () {
+  const id = $(this).data('id');
+
+  if (!confirm('Delete this author?')) return;
+
+  $.ajax({
+    url: `/authors/${id}`,
+    type: 'DELETE',
+    success: function () {
+      table.ajax.reload();
+    },
+    error: function () {
+      alert('Error deleting author');
+    }
+  });
+});
+
+// DELETE BOOK
+$('#mainTable').on('click', '.btn-delete-book', function () {
+  const id = $(this).data('id');
+
+  if (!confirm('Delete this book?')) return;
+
+  $.ajax({
+    url: `/books/${id}`,
+    type: 'DELETE',
+    success: function () {
+      table.ajax.reload();
+    },
+    error: function () {
+      alert('Error deleting book');
+    }
+  });
+});
