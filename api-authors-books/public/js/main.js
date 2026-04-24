@@ -1,4 +1,5 @@
 let table;
+let currentType = ''; // 'author' o 'book'
 
 $(document).ready(function () {
   loadAuthors();
@@ -6,8 +7,6 @@ $(document).ready(function () {
   $('#btnAuthors').click(loadAuthors);
   $('#btnBooks').click(loadBooks);
 });
-
-
 
 function resetTable(headers) {
   if (table) {
@@ -23,25 +22,69 @@ function resetTable(headers) {
   `);
 }
 
+// VIEW (abrir modal)
 $('#mainTable').on('click', '.btn-view', function () {
   const data = table.row($(this).parents('tr')).data();
-
-  console.log(data); // verifica en consola
 
   $('#viewId').val(data.id);
   $('#viewName').val(data.name);
 
-  // Detecta si es author o book
   if (data.age !== undefined) {
-    $('#viewExtra').val('Age: ' + data.age);
+    currentType = 'author';
+    $('#viewExtra').val(data.age);
   } else {
-    $('#viewExtra').val('Pages: ' + data.cantPages);
+    currentType = 'book';
+    $('#viewExtra').val(data.cantPages);
   }
 
   const modal = new bootstrap.Modal(document.getElementById('viewModal'));
   modal.show();
 });
 
+// UPDATE
+$(document).on('click', '#btnUpdate', function () {
+  const id = $('#viewId').val();
+  const name = $('#viewName').val();
+  const extra = $('#viewExtra').val();
+
+  if (!currentType) {
+    alert('No type detected');
+    return;
+  }
+
+  let url = '';
+  let data = {};
+
+  if (currentType === 'author') {
+    url = `/authors/${id}`;
+    data = { name, age: Number(extra) };
+  } else {
+    url = `/books/${id}`;
+    data = { name, cantPages: Number(extra) };
+  }
+
+  $.ajax({
+    url: url,
+    type: 'PUT',
+    contentType: 'application/json',
+    data: JSON.stringify(data),
+    success: function (res) {
+      console.log('UPDATED:', res);
+
+      const modalEl = document.getElementById('viewModal');
+      const modal = bootstrap.Modal.getInstance(modalEl);
+      modal.hide();
+
+      table.ajax.reload();
+    },
+    error: function (err) {
+      console.log(err);
+      alert('Error updating');
+    }
+  });
+});
+
+// LOAD AUTHORS
 function loadAuthors() {
   resetTable(`
     <th>ID</th>
@@ -71,6 +114,8 @@ function loadAuthors() {
     ]
   });
 }
+
+// LOAD BOOKS
 function loadBooks() {
   resetTable(`
     <th>ID</th>
@@ -100,7 +145,7 @@ function loadBooks() {
         }
       }
     ]
-  }); 
+  });
 }
 
 // DELETE AUTHOR
@@ -138,5 +183,3 @@ $('#mainTable').on('click', '.btn-delete-book', function () {
     }
   });
 });
-
-

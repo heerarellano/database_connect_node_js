@@ -41,6 +41,27 @@ app.post('/authors', async (req, res) => {
   }
 });
 
+//Update - put
+
+app.put('/authors/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, age } = req.body;
+
+    const updated = await Author.update(
+      { name, age },
+      { where: { id } }
+    ); 
+
+    return res.json({ message: 'Author updated' });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Error updating author' });
+  }
+});
+
+
+//Books
 app.get('/books', async (req, res) => {
   try {
     const books = await Book.findAll();
@@ -103,6 +124,7 @@ app.delete('/books/:id', async (req, res) => {
     }
 
     return res.json({ message: 'Book deleted' });
+
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: 'Internal server error' });
