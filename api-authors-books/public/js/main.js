@@ -183,3 +183,30 @@ $('#mainTable').on('click', '.btn-delete-book', function () {
     }
   });
 });
+
+// CREATE AUTHOR (desde form.ejs)
+$(document).on('submit', '#authorForm', function (e) {
+  e.preventDefault();
+
+  const data = {
+    name: $('input[name="name"]').val(),
+    age: $('input[name="age"]').val()
+  };
+
+  $.ajax({
+    url: '/authors',
+    type: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify(data),
+    success: function () {
+      window.location.href = '/'; //Envía a home. 
+    },
+    error: function () {
+      alert('Error saving author'); 
+    }
+  });
+});
+
+$(document).on('click', '#btnNewAuthor', function () {
+  window.location.href = '/authors/newAuthAjax'; // Envío a index.js
+});

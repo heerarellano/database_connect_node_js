@@ -23,7 +23,13 @@
 
   <button id="btnAuthors" class="btn btn-primary">Authors</button> 
   <button id="btnBooks" class="btn btn-primary">Books</button>  
-
+  <!-- Nuevo autor con render -->
+  <button class="btn btn-success" onclick="window.location.href='/authors/new'">
+    New Author Render
+  </button>  
+  <!-- Nuevo autor con AJAX -->
+  <button id="btnNewAuthor" class="btn btn-success">New Author Ajax</button>
+ 
   <br><br>
 
   <table id="mainTable" class="display" style="width:100%">
@@ -56,6 +62,7 @@
   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
   <button type="button" id="btnUpdate" class="btn btn-success">Update</button>
 </div>
+
 
     </div>
   </div>

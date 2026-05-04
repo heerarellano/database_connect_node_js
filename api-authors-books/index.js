@@ -7,14 +7,16 @@ const { Author, Book } = require('./models');
 app.use(express.json());
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
-app.use('/bootstrap', express.static('node_modules/bootstrap/dist'));
+app.use('/bootstrap', express.static('node_modules/bootstrap/dist')); 
+app.use(express.urlencoded({ extended: true }));
 
-// Home ahora renderiza la tabla
+// Home muestra los data tables.
 app.get('/', (req, res) => {
   res.render('index');
 });
 
 //  SOLO JSON para DataTables
+
 app.get('/authors', async (req, res) => {
   try {
     const authors = await Author.findAll();
@@ -25,6 +27,19 @@ app.get('/authors', async (req, res) => {
   }
 });
 
+
+// Mostrar formulario author con para trabajar con render.
+app.get('/authors/new', (req, res) => {
+  res.render('authors/form');
+});
+
+// Mostrar formulario author con para trabajar AJAX
+app.get('/authors/newAuthAjax', (req, res) => {
+  res.render('authors/form_ajax_auth');
+});
+
+
+//POST authors (Create)
 app.post('/authors', async (req, res) => {
   try {
     const { name, age } = req.body;
@@ -34,8 +49,10 @@ app.post('/authors', async (req, res) => {
     }
 
     const save = await Author.create({ name, age });
-    return res.status(201).json(save);
-  } catch (error) {
+    return res.redirect('/'); //regresar a home 
+    res.status(201).json(save);
+    
+  } catch (error) { 
     console.log('Error', error);
     return res.status(500).json({ message: 'Internal server error' });
   }
