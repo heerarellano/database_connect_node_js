@@ -29,7 +29,72 @@
   </button>  
   <!-- Nuevo autor con AJAX -->
   <button id="btnNewAuthor" class="btn btn-success">New Author Ajax</button>
+  <!-- Nuevo autor con AJAX -->
+  <button 
+  id="btnOpenAuthorModal" 
+  class="btn btn-success">
+    New Author Modal
+  </button> 
  
+    <!-- MODAL CREATE AUTHOR -->
+  <div class="modal fade" id="authorModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title">New Author</h5>
+
+          <button 
+            type="button" 
+            class="btn-close" 
+            data-bs-dismiss="modal">
+          </button>
+        </div>
+
+        <div class="modal-body">
+
+          <form id="authorFormModal">
+
+            <input 
+              type="text" 
+              id="authorName"
+              class="form-control mb-2"
+              placeholder="Name"
+            >
+
+            <input 
+              type="number"
+              id="authorAge"
+              class="form-control mb-2"
+              placeholder="Age"
+            >
+
+          </form>
+
+        </div>
+
+        <div class="modal-footer">
+
+          <button 
+            type="button" 
+            class="btn btn-secondary"
+            data-bs-dismiss="modal">
+            Close
+          </button>
+
+          <button 
+            type="button"
+            id="btnSaveAuthor"  
+            class="btn btn-success">
+            Save
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
   <br><br>
 
   <table id="mainTable" class="display" style="width:100%">

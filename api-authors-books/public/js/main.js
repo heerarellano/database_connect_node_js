@@ -210,3 +210,55 @@ $(document).on('submit', '#authorForm', function (e) {
 $(document).on('click', '#btnNewAuthor', function () {
   window.location.href = '/authors/newAuthAjax'; // Envío a index.js
 });
+
+// OPEN CREATE AUTHOR MODAL
+$(document).on('click', '#btnOpenAuthorModal', function () {
+
+  $('#authorName').val('');
+  $('#authorAge').val('');
+
+  const modal = new bootstrap.Modal(
+    document.getElementById('authorModal')
+  );
+
+  modal.show();
+});
+
+ 
+// CREATE AUTHOR FROM MODAL 
+$(document).on('click', '#btnSaveAuthor', function () {
+  console.log("btnSaveAuthor ajax modal function")
+  const data = {
+    name: $('#authorName').val(),
+    age: $('#authorAge').val()
+  };
+
+  $.ajax({
+    url: '/authors',
+    type: 'POST', 
+    contentType: 'application/json',
+    data: JSON.stringify(data),
+
+    success: function (res) {
+
+      console.log('AUTHOR CREATED', res);
+
+      // cerrar modal
+      const modalEl = document.getElementById('authorModal');
+
+      const modal = bootstrap.Modal.getInstance(modalEl);
+
+      modal.hide();
+
+      // recargar datatable
+      table.ajax.reload();
+
+    },
+
+    error: function (err) {
+      console.log(err);
+      alert('Error creating author');
+    }
+  });
+
+});

@@ -49,7 +49,7 @@ app.post('/authors', async (req, res) => {
     }
 
     const save = await Author.create({ name, age });
-    return res.redirect('/'); //regresar a home 
+    //return res.redirect('/'); 
     res.status(201).json(save);
     
   } catch (error) { 
