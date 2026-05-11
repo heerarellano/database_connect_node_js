@@ -148,6 +148,7 @@ app.delete('/books/:id', async (req, res) => {
   }
 });
 
+
 sequelize.authenticate()
   .then(() => {
     console.log('Connection success');
@@ -155,6 +156,7 @@ sequelize.authenticate()
   }) 
   .then(() => {
     console.log('Sync models');
+    
     app.listen(port, () => {
       console.log(`Server listen on http://localhost:${port}`);
     });
@@ -162,3 +164,7 @@ sequelize.authenticate()
   .catch((error) => {
     console.error('Connection fail', error);
   }); 
+  
+
+
+module.exports = app;
