@@ -41,7 +41,7 @@ $('#mainTable').on('click', '.btn-view', function () {
   modal.show();
 });
 
-// UPDATE
+/*
 $(document).on('click', '#btnUpdate', function () {
   const id = $('#viewId').val();
   const name = $('#viewName').val();
@@ -83,6 +83,7 @@ $(document).on('click', '#btnUpdate', function () {
     }
   });
 });
+*/
 
 // LOAD AUTHORS
 function loadAuthors() {
@@ -259,6 +260,92 @@ $(document).on('click', '#btnSaveAuthor', function () {
       console.log(err);
       alert('Error creating author');
     }
+  });
+
+});
+
+// UPDATE
+$(document).on('click', '#btnUpdate', function () {
+  console.log("Dentro del nuevo PUT o PATCH")
+
+  const id = $('#viewId').val();
+  const name = $('#viewName').val(); 
+  const extra = $('#viewExtra').val();
+
+  if (!currentType) {
+    alert('No type detected');
+    return;
+  }
+
+  let url = '';
+  let data = {};
+
+  // AUTHOR
+  if (currentType === 'author') {
+
+    url = `/authors/${id}`;
+
+    if (name.trim() !== '') {
+      data.name = name;
+    }
+
+    if (extra.trim() !== '') {
+      data.age = Number(extra);
+    }
+
+  } 
+  
+  // BOOK
+  else {
+
+    url = `/books/${id}`;
+
+    if (name.trim() !== '') {
+      data.name = name;
+    }
+
+    if (extra.trim() !== '') {
+      data.cantPages = Number(extra);
+    }
+
+  }
+
+  // Contar total de campos y agregar método PUT o PATCH.
+  const fieldsCount = Object.keys(data).length;
+
+  const method = fieldsCount === 1
+    ? 'PATCH'
+    : 'PUT';
+
+  $.ajax({
+
+    url: url,
+    type: method,
+    contentType: 'application/json',
+    data: JSON.stringify(data),
+
+    success: function (res) {
+
+      console.log('UPDATED:', res);
+
+      const modalEl = document.getElementById('viewModal');
+
+      const modal = bootstrap.Modal.getInstance(modalEl);
+
+      modal.hide();
+
+      table.ajax.reload();
+
+    },
+
+    error: function (err) {
+
+      console.log(err);
+
+      alert('Error updating');
+
+    }
+
   });
 
 });

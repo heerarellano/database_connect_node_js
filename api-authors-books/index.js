@@ -173,4 +173,43 @@ if (require.main === module) {
   startServer();
 }
 
+
+// PATCH AUTHOR
+app.patch('/authors/:id', async (req, res) => {
+
+  try {
+
+    const { id } = req.params;
+
+    const dataToUpdate = {};
+
+    if (req.body.name !== undefined) {
+      dataToUpdate.name = req.body.name;
+    }
+
+    if (req.body.age !== undefined) {
+      dataToUpdate.age = req.body.age;
+    }
+
+    await Author.update(
+      dataToUpdate,
+      { where: { id } }
+    );
+
+    return res.json({
+      message: 'Author patched'
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    return res.status(500).json({
+      message: 'Internal server error'
+    });
+
+  }
+
+});
+
 module.exports = app;
