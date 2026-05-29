@@ -4,6 +4,15 @@ const port = 3000;
 const { sequelize } = require('./connection');
 const { Author, Book } = require('./models'); 
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./docs/swagger');
+
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec)
+);
+
 app.use(express.json());
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
@@ -16,7 +25,33 @@ app.get('/', (req, res) => {
 });
 
 //  SOLO JSON para DataTables
-
+/**
+ * @openapi
+ * /authors:
+ *   get:
+ *     summary: Obtener todos los autores
+ *     tags:
+ *       - Authors
+ *     responses:
+ *       200:
+ *         description: Lista de autores
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                       name:
+ *                         type: string
+ *                       age:
+ *                         type: integer
+ */
 app.get('/authors', async (req, res) => {
   try {
     const authors = await Author.findAll();
@@ -40,6 +75,33 @@ app.get('/authors/newAuthAjax', (req, res) => {
 
 
 //POST authors (Create)
+/**
+ * @openapi
+ * /authors:
+ *   post:
+ *     summary: Crear autor
+ *     tags:
+ *       - Authors
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - age
+ *             properties:
+ *               name:
+ *                 type: string
+ *               age:
+ *                 type: integer
+ *     responses:
+ *       201:
+ *         description: Autor creado
+ *       400:
+ *         description: Bad request
+ */
 app.post('/authors', async (req, res) => {
   try {
     const { name, age } = req.body;
@@ -112,6 +174,25 @@ app.post('/books', async (req, res) => {
 });
 
 // DELETE AUTHOR
+/**
+ * @openapi
+ * /authors/{id}:
+ *   delete:
+ *     summary: Eliminar autor
+ *     tags:
+ *       - Authors
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Author deleted
+ *       404:
+ *         description: Author not found
+ */
 app.delete('/authors/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -175,6 +256,33 @@ if (require.main === module) {
 
 
 // PATCH AUTHOR
+/**
+ * @openapi
+ * /authors/{id}:
+ *   patch:
+ *     summary: Actualizar parcialmente un autor
+ *     tags:
+ *       - Authors
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               age:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Author patched
+ */
 app.patch('/authors/:id', async (req, res) => {
 
   try {
