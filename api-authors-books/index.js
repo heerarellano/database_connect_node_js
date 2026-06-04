@@ -187,10 +187,28 @@ app.patch('/authors/:id', async (req, res) => {
 });
 
 
+async function startServer() {
+  try {
+
+    await sequelize.authenticate();
+    console.log('Connection success');
+
+    await sequelize.sync();
+    console.log('Sync models');
+
+    app.listen(port, () => {
+      console.log(`Server listen on port ${port}`);
+    });
+
+  } catch (error) {
+
+    console.error('Connection fail', error);
+
+  }
+}
 
 if (require.main === module) {
   startServer();
 }
-
 
 module.exports = app;
