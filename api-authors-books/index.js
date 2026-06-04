@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const { sequelize } = require('./connection');
 const { Author, Book } = require('./models'); 
 
@@ -229,32 +229,6 @@ app.delete('/books/:id', async (req, res) => {
   }
 });
 
-
-async function startServer() {
-  try {
-
-    await sequelize.authenticate();
-    console.log('Connection success');
-
-    await sequelize.sync();
-    console.log('Sync models');
-
-    app.listen(port, () => {
-      console.log(`Server listen on http://localhost:${port}`);
-    });
-
-  } catch (error) {
-
-    console.error('Connection fail', error);
-
-  }
-}
-
-if (require.main === module) {
-  startServer();
-}
-
-
 // PATCH AUTHOR
 /**
  * @openapi
@@ -319,5 +293,30 @@ app.patch('/authors/:id', async (req, res) => {
   }
 
 });
+
+async function startServer() {
+  try {
+
+    await sequelize.authenticate();
+    console.log('Connection success');
+
+    await sequelize.sync();
+    console.log('Sync models');
+
+    app.listen(port, () => {
+      console.log(`Server listen on port ${port}`);
+    });
+
+  } catch (error) {
+
+    console.error('Connection fail', error);
+
+  }
+}
+
+if (require.main === module) {
+  startServer();
+}
+
 
 module.exports = app;
