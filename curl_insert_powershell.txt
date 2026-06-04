@@ -1,0 +1,62 @@
+--powershell
+
+> mkdir tu_proyecto
+> cd tu_proyecto
+> npm -y init
+> npm install express pg pg-hstore sequelize --save
+
+ejemplo 
+
+-- =========================
+-- TABLE: authors
+-- =========================
+CREATE TABLE public.authors (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    age INTEGER NOT NULL,
+    "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =========================
+-- TABLE: books
+-- =========================
+CREATE TABLE public.books (
+    id SERIAL PRIMARY KEY,
+    isbn VARCHAR(50) NOT NULL,
+    name VARCHAR(150) NOT NULL,
+    "cantPages" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    "authorId" INTEGER,
+
+    CONSTRAINT fk_books_author
+        FOREIGN KEY ("authorId")
+        REFERENCES public.authors(id)
+        ON DELETE CASCADE
+); 
+ 
+$body = @{
+    name = "Ana Torres"
+    age = 30
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri "http://localhost:3000/authors" `
+  -Method POST `
+  -Body $body `
+  -ContentType "application/json"
+
+
+  --Book
+
+$body = @{
+    isbn = "999"
+    name = "Nuevo Libro"
+    cantPages = 250
+    author = 1
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri "http://localhost:3000/books" `
+  -Method POST `
+  -Body $body `
+  -ContentType "application/json"
