@@ -314,12 +314,11 @@ $(document).on('click', '#btnUpdate', function () {
   const fieldsCount = Object.keys(data).length;
 
   const method = fieldsCount === 1
-    ? 'PATCH'
-    : 'PUT';
+    ? 'PATCH';
+    ? : 'PUT';
 
   $.ajax({
-
-    url: url,
+git 
     type: method,
     contentType: 'application/json',
     data: JSON.stringify(data),
