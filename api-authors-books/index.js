@@ -202,7 +202,7 @@ async function initDatabase() {
     await sequelize.sync();
     console.log('Database models synced');
   } catch (error) {
-    console.error('Database connection failed:', error.message);
+    console.log('Database connection failed:', error);
   }
 }
 
