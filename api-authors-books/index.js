@@ -1,14 +1,22 @@
-const express = require('express');
-const app = express();
+let express, app, sequelize, Author, Book;
 const port = process.env.PORT || 3000;
-const { sequelize } = require('./connection');
-const { Author, Book } = require('./models'); 
 
-app.use(express.json());
-app.set('view engine', 'ejs');
-app.use(express.static('public'));
-app.use('/bootstrap', express.static('node_modules/bootstrap/dist')); 
-app.use(express.urlencoded({ extended: true }));
+try {
+  express = require('express');
+  app = express();
+  ({ sequelize } = require('./connection'));
+  ({ Author, Book } = require('./models'));
+
+  app.use(express.json());
+  app.set('view engine', 'ejs');
+  app.use(express.static('public'));
+  app.use('/bootstrap', express.static('node_modules/bootstrap/dist'));
+  app.use(express.urlencoded({ extended: true }));
+} catch (err) {
+  process.stderr.write('Fatal error during module loading:\n');
+  process.stderr.write((err && err.stack ? err.stack : String(err)) + '\n');
+  process.exit(1);
+}
 
 // Home muestra los data tables.
 app.get('/', (req, res) => {
