@@ -186,22 +186,23 @@ app.patch('/authors/:id', async (req, res) => {
 
 });
 
-async function startServer() {
-
-  app.listen(port, () => {
-    console.log(`Server listen on port ${port}`);
-  });
- 
+async function initDatabase() {
   try {
     await sequelize.authenticate();
-    console.log('Connection success');
+    console.log('Database connection success');
 
     await sequelize.sync();
-    console.log('Sync models');
-
+    console.log('Database models synced');
   } catch (error) {
-    console.error('Connection fail', error);
+    console.error('Database connection failed:', error.message);
   }
+}
+
+function startServer() {
+  app.listen(port, () => {
+    console.log(`Server listening on port ${port}`);
+    initDatabase();
+  });
 }
 
 if (require.main === module) {
