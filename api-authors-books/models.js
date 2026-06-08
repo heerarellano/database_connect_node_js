@@ -1,48 +1,39 @@
-const { DataTypes } = require('sequelize');
+
 const { sequelize } = require('./connection');
+const { DataTypes } = require('sequelize');
 
 const Author = sequelize.define('Author', {
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  age: { 
+  id: {
     type: DataTypes.INTEGER,
-    allowNull: false
-  }, 
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  name: {
+    type: DataTypes.STRING(255),
+    allowNull: false,
+  },
+  age: {
+    type: DataTypes.INTEGER,
+  },
   createdAt: {
     type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
-  }
-}, { tableName: 'authors' });
+    defaultValue: DataTypes.NOW,
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
+}, {
+  tableName: 'autor',
+  timestamps: true,
+});
 
 const Book = sequelize.define('Book', {
-
-  isbn: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  cantPages: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    defaultValue: 0
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
-  }
-}, { tableName: 'books' });
-
-Author.hasMany(Book, { as: 'books', foreignKey: 'authorId' });
-Book.belongsTo(Author, {
-  foreignKey: "authorId",
+  // ... your Book model
 });
 
 module.exports = {
+  sequelize,
   Author,
-  Book
+  Book,
 };
