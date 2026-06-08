@@ -199,7 +199,7 @@ async function initDatabase() {
     await sequelize.authenticate();
     console.log('Database connection success');
 
-    await sequelize.sync();
+    await sequelize.sync({ alter: true });
     console.log('Database models synced');
   } catch (error) {
     console.log('Database connection failed:', error);
